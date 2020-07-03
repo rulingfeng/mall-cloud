@@ -1,9 +1,14 @@
 package com.rlf.module.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.macro.mall.common.api.CommonResult;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCollapser;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.netflix.hystrix.contrib.javanica.cache.annotation.CacheResult;
+import com.netflix.hystrix.contrib.javanica.command.AsyncResult;
 import com.rlf.module.service.HystrixService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,19 +16,31 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 /**
  * @author RU
  * @date 2020/7/3
- * @Desc
+ * @Desc 熔断器相关 服务降级  及  缓存
  */
 @Service
+@Slf4j
 public class HystrixServiceImpl implements HystrixService {
     @Resource
     RestTemplate restTemplate;
 
     String HOST_MALL_ADMIN = "http://localhost:8201/mall-admin";
+
+    HashMap<String , Object> map = new HashMap<>();
+
+    {
+        map.put("1",1);
+        map.put("2",2);
+        map.put("3",3);
+    }
 
     @Override
     @HystrixCommand(fallbackMethod = "bbb")
@@ -51,4 +68,25 @@ public class HystrixServiceImpl implements HystrixService {
         return String.valueOf(id);
     }
 
+    //---------------------------------
+
+
+    @Override
+    @HystrixCollapser(batchMethod = "getUserByIds",collapserProperties = {
+            @HystrixProperty(name = "timerDelayInMilliseconds", value = "100")
+    })
+    public Future<Object> hystrixCollapser(Long id) {
+        return new AsyncResult<Object>() {
+            @Override
+            public Object invoke(){
+                return map.get(id.toString());
+            }
+        };
+    }
+
+    @HystrixCommand
+    public List<Object> getUserByIds(List<Long> ids) {
+        log.info("getUserByIds:{}", ids);
+        return ids.stream().map(i -> map.get(i.toString())).collect(Collectors.toList());
+    }
 }

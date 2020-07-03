@@ -23,6 +23,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author RU
@@ -87,7 +89,22 @@ public class RestTemplateDemoController {
         return hystrixService.getList(id);
     }
 
+    //@HystrixCollapser实现请求合并
+    @RequestMapping(value = "/getProductList3/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public Object getProductList3(@PathVariable Long id) throws Exception{
+        System.out.println("进入到getProductList3方法");
+        Future<Object> a1 = hystrixService.hystrixCollapser(1L);
+        Future<Object> a2 = hystrixService.hystrixCollapser(2L);
 
+        a1.get();
+        a2.get();
+        TimeUnit.MILLISECONDS.sleep(200);
+        Future<Object> a3 = hystrixService.hystrixCollapser(3L);
+        a3.get();
+
+        return a1.get();  // 1
+    }
 
 
 
