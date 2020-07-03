@@ -21,6 +21,7 @@ public class RlfModuleApplication {
     }
 
     @Bean
+    @LoadBalanced
     public RestTemplate restTemplate(){
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
         requestFactory.setConnectionRequestTimeout(1000);

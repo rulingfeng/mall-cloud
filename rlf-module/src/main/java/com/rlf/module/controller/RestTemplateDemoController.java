@@ -39,7 +39,7 @@ public class RestTemplateDemoController {
     @Resource
     RestTemplate restTemplate;
 
-    String HOST_MALL_ADMIN = "http://localhost:8201/mall-admin";
+    String HOST_MALL_ADMIN = "http://127.0.0.1:8201/mall-admin";
 
     @Resource
     HystrixService hystrixService;
@@ -94,15 +94,15 @@ public class RestTemplateDemoController {
     @ResponseBody
     public Object getProductList3(@PathVariable Long id) throws Exception{
         System.out.println("进入到getProductList3方法");
+        long l = System.currentTimeMillis();
         Future<Object> a1 = hystrixService.hystrixCollapser(1L);
         Future<Object> a2 = hystrixService.hystrixCollapser(2L);
-
+        System.out.println(System.currentTimeMillis()-l);
         a1.get();
         a2.get();
         TimeUnit.MILLISECONDS.sleep(200);
         Future<Object> a3 = hystrixService.hystrixCollapser(3L);
         a3.get();
-
         return a1.get();  // 1
     }
 
