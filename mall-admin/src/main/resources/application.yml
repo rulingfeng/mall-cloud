@@ -59,6 +59,7 @@ secure:
       - /admin/info
       - /admin/logout
       - /minio/upload
+      - /product/list
 aliyun:
   oss:
     endpoint: oss-cn-shenzhen.aliyuncs.com # oss对外服务的访问域名

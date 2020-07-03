@@ -3,7 +3,7 @@ package com.rlf.module.threadDispatch;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.ReentrantLock;
 
-//线程通信
+//线程通信  线程调度
 public class WaitAndNotify {
 
     public static void main(String[] args){

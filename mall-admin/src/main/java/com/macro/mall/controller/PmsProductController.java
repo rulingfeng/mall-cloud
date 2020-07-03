@@ -66,6 +66,9 @@ public class PmsProductController {
                                                         @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
                                                         @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
         List<PmsProduct> productList = productService.list(productQueryParam, pageSize, pageNum);
+//        if(true){
+//            throw new RuntimeException("aaa");
+//        }
         return CommonResult.success(CommonPage.restPage(productList));
     }
 
