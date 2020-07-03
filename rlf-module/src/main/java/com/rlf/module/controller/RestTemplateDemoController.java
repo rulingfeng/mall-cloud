@@ -2,6 +2,9 @@ package com.rlf.module.controller;
 
 import com.macro.mall.common.api.CommonResult;
 import com.macro.mall.model.PmsBrand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.cache.annotation.CacheResult;
+import com.rlf.module.service.HystrixService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,9 @@ public class RestTemplateDemoController {
 
     String HOST_MALL_ADMIN = "http://localhost:8201/mall-admin";
 
+    @Resource
+    HystrixService hystrixService;
+
 
     @RequestMapping(value = "/getProductList", method = RequestMethod.GET)
     @ResponseBody
@@ -47,6 +53,52 @@ public class RestTemplateDemoController {
         ResponseEntity<CommonResult> responseEntity = restTemplate.getForEntity(url, CommonResult.class, params);
         return responseEntity.getBody();
     }
+
+    //HystrixCommand注解形式 服务降级
+    @RequestMapping(value = "/getProductList1/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    @HystrixCommand(fallbackMethod = "aaa")
+    public Object getProductList1(@PathVariable Long id) {
+        System.out.println("进入到getProductList1方法");
+        String url = HOST_MALL_ADMIN + "/product/list";
+        Map<String, Object> params = new HashMap<>();
+        params.put("pageSize", 5);
+        params.put("pageNum", 1);
+        ResponseEntity<CommonResult> responseEntity = restTemplate.getForEntity(url, CommonResult.class, params);
+        return responseEntity.getBody();
+    }
+
+    public Object aaa(@PathVariable Long id){
+        return CommonResult.failed("HystrixCommand-aaa注解进到降级,id="+id+",name=");
+    }
+
+    public Object bbb(@PathVariable Long id){
+        return CommonResult.failed("HystrixCommand-bbb注解进到降级,id="+id+",name=");
+    }
+
+
+    //
+    @RequestMapping(value = "/getProductList2/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public Object getProductList2(@PathVariable Long id) {
+        System.out.println("进入到getProductList2方法");
+        hystrixService.getList(id);
+        hystrixService.getList(id);
+        return hystrixService.getList(id);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @ApiOperation("getForEntity url")
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
