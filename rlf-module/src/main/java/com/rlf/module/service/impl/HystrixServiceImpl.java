@@ -8,7 +8,10 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.netflix.hystrix.contrib.javanica.cache.annotation.CacheResult;
 import com.netflix.hystrix.contrib.javanica.command.AsyncResult;
 import com.rlf.module.service.HystrixService;
+import com.rlf.module.service.LoopRelyOnService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +34,8 @@ import java.util.stream.Collectors;
 public class HystrixServiceImpl implements HystrixService {
     @Resource
     RestTemplate restTemplate;
+    @Resource
+    LoopRelyOnService loopRelyOnService;
 
     String HOST_MALL_ADMIN = "http://localhost:8201/mall-admin";
 
