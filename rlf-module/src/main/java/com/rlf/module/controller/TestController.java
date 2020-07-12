@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/module")
@@ -30,4 +32,6 @@ public class TestController {
     public CommonResult domainFeign(){
         return feignService.getProductList(new PmsProductQueryParam(), 5, 1);
     }
+
+
 }

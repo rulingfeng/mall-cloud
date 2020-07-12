@@ -1,9 +1,10 @@
 package com.rlf.module.algorithm;
 
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.models.auth.In;
 
-import java.util.LinkedList;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * @author RU
@@ -23,10 +24,5 @@ public class LRU {
                 list.add(i);
             }
         }
-//        String a = "{\"生活用品数量\": \"4层80g*24卷\"}";
-//        JSONObject json = JSONObject.parseObject(a);
-//        Set<String> strings = json.keySet();
-//        Object o = json.get(strings.toArray()[0]);
-//        System.out.println(o);
     }
 }
