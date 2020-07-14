@@ -18,4 +18,5 @@ public interface CmsSubjectService {
      * 分页查询专题
      */
     List<CmsSubject> list(String keyword, Integer pageNum, Integer pageSize);
+    boolean save()throws RuntimeException;
 }

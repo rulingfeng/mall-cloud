@@ -43,4 +43,14 @@ public class CmsSubjectController {
         List<CmsSubject> subjectList = subjectService.list(keyword, pageNum, pageSize);
         return CommonResult.success(CommonPage.restPage(subjectList));
     }
+    @RequestMapping(value = "/save", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<CommonPage<CmsSubject>> save() {
+        try{
+            subjectService.save();
+            return CommonResult.success();
+        }catch (RuntimeException e){
+            return CommonResult.failed(e.getMessage());
+        }
+    }
 }

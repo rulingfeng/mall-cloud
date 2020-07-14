@@ -7,8 +7,10 @@ import com.macro.mall.model.CmsSubjectExample;
 import com.macro.mall.service.CmsSubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,5 +36,19 @@ public class CmsSubjectServiceImpl implements CmsSubjectService {
             criteria.andTitleLike("%" + keyword + "%");
         }
         return subjectMapper.selectByExample(example);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean save() throws RuntimeException{
+        CmsSubject cmsSubject = new CmsSubject();
+        cmsSubject.setId(10L);
+        cmsSubject.setCategoryId(1L);
+        cmsSubject.setTitle("测试title");
+        cmsSubject.setCreateTime(new Date());
+        cmsSubject.setCategoryName("测试用name");
+        int insert = subjectMapper.insert(cmsSubject);
+        System.out.println("保存insert条数:"+insert);
+        throw new RuntimeException("错误");
     }
 }

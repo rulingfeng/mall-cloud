@@ -145,4 +145,12 @@ public class PmsProductController {
             return CommonResult.failed();
         }
     }
+
+
+    @RequestMapping(value = "/saveUser", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult updateDeleteStatus() {
+        
+        return CommonResult.success();
+    }
 }

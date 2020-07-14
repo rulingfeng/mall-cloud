@@ -1,10 +1,13 @@
 package com.rlf.module.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.macro.mall.common.api.CommonResult;
 import com.macro.mall.model.PmsBrand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.cache.annotation.CacheResult;
+import com.rlf.module.entity.User;
 import com.rlf.module.service.HystrixService;
+import com.rlf.module.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -39,10 +43,28 @@ public class RestTemplateDemoController {
     @Resource
     RestTemplate restTemplate;
 
-    String HOST_MALL_ADMIN = "http://127.0.0.1:8201/mall-admin";
+    String HOST_MALL_ADMIN = "http://mall-admin";
 
     @Resource
     HystrixService hystrixService;
+    @Resource
+    UserService userService;
+
+    @RequestMapping(value = "/testSeata", method = RequestMethod.GET)
+    @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
+    public Object testSeata() {
+        User user = new User();
+        user.setId(1);
+        user.setUserName("你好");
+        user.setAge("18");
+        userService.insert(user);
+        String url = HOST_MALL_ADMIN + "/subject/save";
+        ResponseEntity<CommonResult> responseEntity = restTemplate.getForEntity(url, CommonResult.class, new HashMap<>());
+        System.out.println(JSONObject.toJSONString(responseEntity.getBody()));
+        return user;
+    }
+
 
 
     @RequestMapping(value = "/getProductList", method = RequestMethod.GET)
