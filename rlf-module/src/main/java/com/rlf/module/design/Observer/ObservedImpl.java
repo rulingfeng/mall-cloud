@@ -22,5 +22,6 @@ public class ObservedImpl {
         System.out.println("-----------------------------");
         listener.publishEvent("发送消息2222");
 
+
     }
 }

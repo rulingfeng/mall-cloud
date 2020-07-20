@@ -5,6 +5,8 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author 茹凌丰
@@ -19,9 +21,27 @@ public class CompletableFutureDemo {
         //rightOffReturnFalseIfHasFalse();
         //同时执行两个不相关任务，然后合并
         //performMerge();
-
+        vagf();
 
     }
+
+    public static void vagf(){
+        String original = "Message";
+        StringBuilder result = new StringBuilder();
+        AtomicInteger a = new AtomicInteger();
+//        CompletableFuture.completedFuture(original).thenApply(result::append).runAfterBoth(
+//                CompletableFuture.completedFuture(original).thenApply(result::append),
+//                () -> result.append("done"));
+        CompletableFuture.completedFuture(original).thenApply(result::append).runAfterBoth(
+                CompletableFuture.completedFuture(original).thenApply(result::append), ()->{
+                    int length = result.length();
+                    a.set(length);
+                });
+        System.out.println(result.toString());
+        System.out.println(a.get());
+
+    }
+
 
     public static void rightOffReturnFalseIfHasFalse()throws Exception{
         CompletableFuture.supplyAsync(() -> {
