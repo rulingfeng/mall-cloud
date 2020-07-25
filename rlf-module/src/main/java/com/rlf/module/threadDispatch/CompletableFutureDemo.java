@@ -42,9 +42,8 @@ public class CompletableFutureDemo {
         //twoResultToOneFinalResult();
         //List流处理
         //listStreamHandle();
-        listStreamHandleForMap();
-        //test1();
-
+        //listStreamHandleForMap();
+        test1();
     }
 
     public static void test1(){
