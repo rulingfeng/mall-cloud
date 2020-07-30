@@ -4,6 +4,12 @@ spring:
     url: jdbc:mysql://120.26.81.182:3306/mall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: root
     password: root
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    database: 0
+    timeout: 10000
 logging:
   level:
     root: info #日志配置DEBUG,INFO,WARN,ERROR
