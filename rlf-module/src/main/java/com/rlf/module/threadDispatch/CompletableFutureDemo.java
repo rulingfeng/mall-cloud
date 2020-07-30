@@ -2,6 +2,7 @@ package com.rlf.module.threadDispatch;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.rlf.module.entity.User;
 import io.swagger.models.auth.In;
 import lombok.Data;
 
@@ -43,10 +44,33 @@ public class CompletableFutureDemo {
         //List流处理
         //listStreamHandle();
         //listStreamHandleForMap();
-        test1();
+        //遍历list各自执行
+        //listStreamSeparately();
+        //如果执行中后异常,可以用handle方法进行捕捉,并处理
+        //exceptionHandle();
+
+
     }
 
-    public static void test1(){
+
+
+    public static void exceptionHandle()throws Exception{
+
+        CompletableFuture<String> maturityFuture = CompletableFuture.supplyAsync(() -> {
+            int a = 1/0;
+            return "aaa";
+        }).thenApply(data->data+"bbb")
+                .handle((data,exception)->{
+                    System.out.println(data);
+                    System.out.println(exception.getMessage());
+                    return "return";
+
+                });
+        System.out.println(maturityFuture.get());
+
+    }
+
+    public static void listStreamSeparately(){
         long start = System.currentTimeMillis();
         // 结果集
         List<String> list = new ArrayList<>();
@@ -129,12 +153,17 @@ public class CompletableFutureDemo {
         ExecutorService executor = Executors.newFixedThreadPool(aList.size());
         //List<String> collect = aList.stream().flatMap(List::stream).collect(Collectors.toList());
         //System.out.println(collect);
+
+        //Wait for them all to complete
         List<CompletableFuture<List<Boolean>>> futureList = aList.stream()
                 .map(strings -> CompletableFuture.supplyAsync(() -> processList(strings), threadPoolExecutor))
                 .collect(toList());
 
-        //Wait for them all to complete
-        CompletableFuture.allOf(futureList.toArray(new CompletableFuture[0])).join();
+//        CompletableFuture.allOf(futureList.toArray(new CompletableFuture[0])).join();
+        CompletableFuture.allOf(futureList.toArray(new CompletableFuture[futureList.size()])).whenComplete((x,y)->{
+            System.out.println(x);
+            System.out.println(y);
+        });
         List<List<Boolean>> collect = futureList.stream()
                 .map(CompletableFuture::join).collect(toList());
         System.out.println(collect);
@@ -202,8 +231,8 @@ public class CompletableFutureDemo {
     public static void rightOffReturnFalseIfHasFalse()throws Exception{
         CompletableFuture.supplyAsync(() -> {
             try {
-                TimeUnit.SECONDS.sleep(3);
-                System.out.println(3);
+                TimeUnit.SECONDS.sleep(2);
+                System.out.println(2);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -212,8 +241,8 @@ public class CompletableFutureDemo {
 
         CompletableFuture.supplyAsync(()->{
             try {
-                TimeUnit.SECONDS.sleep(8);
-                System.out.println(8);
+                TimeUnit.SECONDS.sleep(4);
+                System.out.println(4);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -222,8 +251,8 @@ public class CompletableFutureDemo {
 
         CompletableFuture.supplyAsync(()->{
             try {
-                TimeUnit.SECONDS.sleep(20);
-                System.out.println(20);
+                TimeUnit.SECONDS.sleep(6);
+                System.out.println(6);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -233,7 +262,7 @@ public class CompletableFutureDemo {
     }
 
     private static void res(boolean flag){
-        if(false == flag){
+        if(!flag){
             //处理结束流程
             //通知其他线程结束(回滚)
             //超时处理
