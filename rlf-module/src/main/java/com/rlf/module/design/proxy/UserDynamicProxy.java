@@ -30,11 +30,19 @@ public class UserDynamicProxy implements InvocationHandler {
     }
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        System.out.println("代理之前执行");
-     //   if ( !target.isInterface() ){
+//        System.out.println("代理之前执行");
+//     //   if ( !target.isInterface() ){
+//
+//            method.invoke(target.newInstance(),args);
+//   //     }
+//        System.out.println("代理之后执行");
+        if(method.getName().equals("speak")){
+            System.out.println("代理之前执行");
             method.invoke(target.newInstance(),args);
-   //     }
-        System.out.println("代理之后执行");
+            System.out.println("代理之后执行");
+        }else{
+            method.invoke(target.newInstance(),args);
+        }
         return "111";
     }
 
@@ -43,6 +51,7 @@ public class UserDynamicProxy implements InvocationHandler {
         UserDynamicProxy userProxy = new UserDynamicProxy();
         People proxy = userProxy.getProxy(User.class);
         proxy.speak();
+        proxy.walk();
 
 
 

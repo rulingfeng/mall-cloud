@@ -26,6 +26,11 @@ public class UserStaticProxy implements People {
         System.out.println("执行后");
     }
 
+    @Override
+    public void walk() {
+
+    }
+
     public static void main(String[] args) {
         User user = new User();
         UserStaticProxy userStaticProxy = new UserStaticProxy(user);

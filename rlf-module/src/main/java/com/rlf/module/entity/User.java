@@ -32,4 +32,9 @@ public class User extends Model<User> implements Serializable,People {
     public void speak() {
         System.out.println("speak");
     }
+
+    @Override
+    public void walk() {
+        System.out.println("walk");
+    }
 }

@@ -8,4 +8,5 @@ package com.rlf.module.entity;
 public interface People {
 
     void speak();
+    void walk();
 }
