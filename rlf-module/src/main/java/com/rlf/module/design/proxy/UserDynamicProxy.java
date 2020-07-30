@@ -15,6 +15,7 @@ import java.util.List;
  * @date 2020/7/30
  * @Desc
  */
+/**JDK动态代理*/
 public class UserDynamicProxy implements InvocationHandler {
 
     private Class target;
