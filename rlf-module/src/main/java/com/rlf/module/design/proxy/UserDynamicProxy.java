@@ -15,7 +15,7 @@ import java.util.List;
  * @date 2020/7/30
  * @Desc
  */
-public class UserProxy implements InvocationHandler {
+public class UserDynamicProxy implements InvocationHandler {
 
     private Class target;
 
@@ -39,7 +39,7 @@ public class UserProxy implements InvocationHandler {
 
 
     public static void main(String[] args) {
-        UserProxy userProxy = new UserProxy();
+        UserDynamicProxy userProxy = new UserDynamicProxy();
         People proxy = userProxy.getProxy(User.class);
         proxy.speak();
 
