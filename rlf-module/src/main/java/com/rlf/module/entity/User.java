@@ -11,7 +11,7 @@ import java.io.Serializable;
 
 @Data
 @TableName("user")
-public class User extends Model<User> implements Serializable {
+public class User extends Model<User> implements Serializable,People {
     private static final long serialVersionUID = -7757471143347689303L;
     @TableId
     protected Integer id;
@@ -26,5 +26,10 @@ public class User extends Model<User> implements Serializable {
     @Override
     protected Serializable pkVal() {
         return null;
+    }
+
+    @Override
+    public void speak() {
+        System.out.println("speak");
     }
 }
