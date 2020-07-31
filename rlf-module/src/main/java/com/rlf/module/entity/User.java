@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import lombok.Data;
+import lombok.var;
+
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -42,6 +44,4 @@ public class User extends Model<User> implements Serializable,People {
     public void walk() {
         System.out.println("walk");
     }
-
-
 }
