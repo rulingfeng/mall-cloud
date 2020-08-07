@@ -210,7 +210,7 @@ public class CompletableFutureDemo {
         StringBuilder result = new StringBuilder();
         AtomicInteger a = new AtomicInteger();
 //        CompletableFuture.completedFuture(original).thenApply(result::append).runAfterBoth(
-//                CompletableFuture.completedFuture(original).thenApply(result::append),
+//                CompletableFuture.completedFuture(original).thenAsupplyAsyncpply(result::append),
 //                () -> result.append("done"));
         CompletableFuture.completedFuture(original).thenApply(result::append).runAfterBoth(
                 CompletableFuture.completedFuture(original).thenApply(result::append), ()->{

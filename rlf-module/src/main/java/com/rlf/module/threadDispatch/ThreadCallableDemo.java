@@ -19,7 +19,7 @@ public class ThreadCallableDemo {
         Future<Boolean> a = pool.submit(() -> {
             Thread.sleep(2000);
             System.out.println(2);
-            return true;
+            return false;
         });
         futures.add(a);
         Future<Boolean> b = pool.submit(() -> {
@@ -49,22 +49,22 @@ public class ThreadCallableDemo {
             }
             if(flag || futures.size() == futureSet.size()){
 
-                new Thread(()->{
-                    try {
-                        cb.await();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (BrokenBarrierException e) {
-                        e.printStackTrace();
-                    }
-                }).start();
+//                new Thread(()->{
+//                    try {
+//                        cb.await();
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    } catch (BrokenBarrierException e) {
+//                        e.printStackTrace();
+//                    }
+//                }).start();
                 if(flag){
                     isWrong = true;
                 }
                 break;
             }
         }
-        cb.await();
+        //cb.await();
         System.out.println("wode");
         if(isWrong){
             System.out.println("其中一个线程返回了false");
