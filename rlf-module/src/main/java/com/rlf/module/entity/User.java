@@ -5,14 +5,14 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import io.swagger.models.auth.In;
 import lombok.Data;
 import lombok.var;
 
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -30,6 +30,8 @@ public class User extends Model<User> implements Serializable,People {
     protected String age;
 
 
+
+
     @Override
     protected Serializable pkVal() {
         return null;
@@ -44,4 +46,6 @@ public class User extends Model<User> implements Serializable,People {
     public void walk() {
         System.out.println("walk");
     }
+
+
 }
