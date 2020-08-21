@@ -35,7 +35,7 @@ public class StreamTest {
 //        list.forEach(System.out::println);
 //        Integer reduce = Stream.iterate(0, i -> i+1).limit(101).parallel().reduce(0, Integer::sum);
 //        Map<Integer, List<Integer>> collect = list.stream().collect(Collectors.groupingBy(Function.identity()));
-//        IntStream longStream = list.stream().sequential().flatMapToInt(i-> IntStream.of(Integer.valueOf(i)));
+//        IntStream longStream = list.stream().flatMapToInt(i-> IntStream.of(Integer.valueOf(i)));
         //longStream.forEach(System.out::println);
 
 

@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Data
 @TableName("user")
@@ -47,5 +48,13 @@ public class User extends Model<User> implements Serializable,People {
         System.out.println("walk");
     }
 
-
+    public static void main(String[] args) {
+        Integer reduce = Stream.iterate(0, i -> i+1).limit(10001).parallel().reduce(0,Integer::sum);
+        Integer a = 0;
+        for (int i = 1; i <= 10000; i++) {
+            a+=i;
+        }
+        System.out.println(reduce);
+        System.out.println(a);
+    }
 }
