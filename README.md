@@ -16,6 +16,7 @@
 
 ![系统架构图](document/resource/mall_micro_service_arch.jpg)
 
+
 ## 组织结构
 
 ``` lua
