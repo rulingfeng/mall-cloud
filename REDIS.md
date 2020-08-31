@@ -46,6 +46,7 @@
     geo: 车场位置经纬度查找,用到了zset的数据结构,会把设置的经纬度转换成分值存储
     bloomFilter: 防止redis穿透发生等
     Pub/Sub: 订阅消费
+    rediSearch: 强大的搜索引擎
     
     
 #BloomFilter:
@@ -95,6 +96,10 @@
         4.查询数据库的时候方法加同步, 让一个先去查,然后在set到redis中, 同步方法进去后,在从redis中拿一下, 提供效率, 类似 DCL单例
 
 
+                  
+                      
+                
+    
 
 #redis并发竞争key的问题 ?
        所谓 Redis 的并发竞争 Key 的问题也就是多个系统同时对⼀个 key 进⾏操作，但是最后执⾏的顺序
