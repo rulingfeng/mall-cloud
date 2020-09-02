@@ -1,4 +1,4 @@
-package util;
+package com.rlf.module.util;
 
 import java.sql.Timestamp;
 import java.util.concurrent.*;
@@ -34,6 +34,7 @@ public class SystemClock {
     private static SystemClock instance() {
         return InstanceHolder.INSTANCE;
     }
+
 
     private void scheduleClockUpdating() {
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(runnable -> {
