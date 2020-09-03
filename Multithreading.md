@@ -39,6 +39,42 @@
         2. 容易发生ABA问题,需要进行值和版本号比较(compare and swap 只比较值)
         3. CAS操作长时间不成功的话，会导致一直自旋，相当于死循环了，CPU的压力会很大。
         
+   ##volatile
+        MESI（缓存一致性协议）   
+            当CPU写数据时，如果发现操作的变量是共享变量，即在其他CPU中也存在该变量的副本，会发出信号通知其他CPU将该变量的缓存行置为无效状态，
+                因此当其他CPU需要读取这个变量时，发现自己缓存中缓存该变量的缓存行是无效的，那么它就会从内存重新读取。
+        通过嗅探发现数据是否失效.
+        as-if-serial语义: 不管怎么重排序，单线程下的执行结果不能被改变。
+        
+        happens-before规则:
+            是一个给程序员使用的规则，只要程序员在写代码的时候遵循happens-before规则，JVM就能保证指令在多线程之间的顺序性符合程序员的预期。
+        
+        内存屏障: 
+        
+   ##ThreadLocal
+        线程本地副本变量
+        使用场景: 
+            1.spring采用ThreadLocal的方式来保证单个线程中的数据库操作是同一个数据库连接 详见:TransactionSynchronizationManager类
+            2.simpleDateFormat: 多线程环境下会出现线程安全性问题, 内部有一个Calendar类,如果调用了add和clear方法后,parse方法就出问题了
+        底层实现原理;
+            1.每个线程都有ThreadLocals属性 , 是一个ThreadLocalMap,存放着线程的本地数据,从而实现了数据隔离
+            2.ThreadLocalMap底层实现:
+                类似于hashMap,但是他是基于数组和非链表的形式
+                数组是因为一个线程中可能有多个ThreadLocal,即多个本地变量
+                解决hash冲突: 
+                    在插入过程中，根据ThreadLocal对象的hash值，定位到table中的位置i
+                    如果当前位置是空的，就初始化一个Entry对象放在位置i上；
+                    如果位置i不为空，如果这个Entry对象的key正好是即将设置的key，那么就刷新Entry中的value；
+                    如果位置i的不为空，而且key不等于entry，那就找下一个空位置，直到为空为止。
+            3.本地变量存放在哪里?
+                虽然每个线程都会有一个属于自己的栈内存,但是都是位于堆上,只是通过一些技巧将可见性修改成了线程可见
+                
+        InheritableThreadLocal可以共享线程ThreadLocal数据,但是只能在子线程中
+            (Thread类中有InheritableThreadLocals属性)          
+            
+        导致内存泄漏: ThreadLocalMap的key是若引用会被垃圾回收,但是value是强引用,永远不会被回收,会导致OOM,用完必须remove掉ThreadLocal变量
+            ThreadLocalMap的key设置成弱引用也是为了避免OOM
+        
         
         
         

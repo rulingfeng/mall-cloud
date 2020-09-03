@@ -5,6 +5,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.rlf.module.entity.User;
 import io.swagger.models.auth.In;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -23,11 +24,15 @@ import static java.util.stream.Collectors.toList;
  * @Description:
  * @date 2020/7/1113:20
  */
+@Slf4j
 public class CompletableFutureDemo {
 
     private static int coreThreads = Runtime.getRuntime().availableProcessors();
 
-    private static ThreadFactory namedThread = new ThreadFactoryBuilder().setNameFormat("worker-thread-%d").build();
+    private static ThreadFactory namedThread =
+            new ThreadFactoryBuilder().setNameFormat("worker-thread-%d")
+                    .setUncaughtExceptionHandler((thread, throwable)-> log.error("ThreadPool {} got exception", thread,throwable))
+                    .build();
 
     private static final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(coreThreads, coreThreads << 1 + 1,
             300, TimeUnit.SECONDS, new LinkedBlockingQueue<>(1000), namedThread);
