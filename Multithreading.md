@@ -50,6 +50,12 @@
             是一个给程序员使用的规则，只要程序员在写代码的时候遵循happens-before规则，JVM就能保证指令在多线程之间的顺序性符合程序员的预期。
         
         内存屏障: 
+            LoadLoad屏障：对于这样的语句Load1; LoadLoad; Load2，在Load2及后续读取操作要读取的数据被访问前，保证Load1要读取的数据被读取完毕。
+            StoreStore屏障：对于这样的语句Store1; StoreStore; Store2，在Store2及后续写入操作执行前，这个屏障会吧Store1强制刷新到内存，
+                保证Store1的写入操作对其它处理器可见。
+            LoadStore屏障：对于这样的语句Load1; LoadStore; Store2，在Store2及后续写入操作被刷出前，保证Load1要读取的数据被读取完毕。
+            StoreLoad屏障：对于这样的语句Store1; StoreLoad; Load2，在Load2及后续所有读取操作执行前，保证Store1的写入对所有处理器可见。
+                它的开销是四种屏障中最大的（冲刷写缓冲器，清空无效化队列）。在大多数处理器的实现中，这个屏障是个万能屏障，兼具其它三种内存屏障的功能
         
    ##ThreadLocal
         线程本地副本变量
@@ -72,8 +78,12 @@
         InheritableThreadLocal可以共享线程ThreadLocal数据,但是只能在子线程中
             (Thread类中有InheritableThreadLocals属性)          
             
-        导致内存泄漏: ThreadLocalMap的key是若引用会被垃圾回收,但是value是强引用,永远不会被回收,会导致OOM,用完必须remove掉ThreadLocal变量
+        导致内存泄漏: ThreadLocalMap的key是弱引用会被垃圾回收,但是value是强引用(可能value被其他所引用着,所以不能直接设置为弱引用)
+            ,永远不会被回收,会导致OOM,用完必须remove掉ThreadLocal变量
             ThreadLocalMap的key设置成弱引用也是为了避免OOM
+            
+   ![](document/resource/ThreadLocal.png)   
+        
         
         
         
