@@ -40,7 +40,8 @@
     List: 消息队列,粉丝列表, 微博下拉不断分页
     Set: 去重,  交集、并集、差集
     Sorted Set: 延迟队列  geo:经纬度会换算成一个分值,视频做排行榜,按照时间、按照播放量、按照获得的赞数等 
-    
+                基于跳表实现: 复杂度和红黑树一样,但是实现简单,红黑树在插入和删除下需要重新平衡,性能不如跳表
+                
     bitMap: 用户签到,统计活跃用户,当前在线用户量
     HyperLogLog: 做UV统计比set数据结构更好
     geo: 车场位置经纬度查找,用到了zset的数据结构,会把设置的经纬度转换成分值存储
@@ -196,6 +197,12 @@
     Redis cluster 的高可用与主备切换原理:
         和哨兵模式几乎一样,从主观宕机到客观宕机,然后进行选举最合适从节点,小于超时时间,offset越大越有机会得到选举,选出从节点,在继续投票决定,大部分同意后再会正式切换
         和哨兵模式比较 :  非常相似, redis集群的强大,直接集成了 repilcation(复制) 和 sentinel (哨兵)的功能
+
+    Redis 集群模式性能优化
+        1.主节点可以不做RDB或者AOF,可以让从节点做AOF,每一秒一次
+        2.为了复制速度和链接的稳定性,主从最好在一个局域网内
+        3.主从复制做单向链表复制,Master <- Slave1 <- Slave2 <- Slave3,容易解决单点故障问题.
+        
 
 #Redis 主从架构:    
 - 参考： [https://github.com/doocs/advanced-java/blob/master/docs/high-concurrency/redis-master-slave.md]()

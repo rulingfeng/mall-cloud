@@ -23,6 +23,15 @@
              依赖注入: 容器加载了外部的文件、对象、数据，然后把这些资源注入给程序内的对象，维护了程序内外对象之间的依赖关系。
        好处: 解耦
        
+   ####springBean的生命周期
+        1.实例化Bean：Ioc容器通过获取BeanDefinition对象中的信息进行实例化，实例化对象被包装在BeanWrapper对象中
+        2.设置对象属性（DI）：通过BeanWrapper提供的设置属性的接口完成属性依赖注入；
+        3.注入Aware接口（BeanFactoryAware， 可以用这个方式来获取其它 Bean，ApplicationContextAware）：
+            Spring会检测该对象是否实现了xxxAware接口，并将相关的xxxAware实例注入给bean
+        4.BeanPostProcessor：自定义的处理（分前置处理和后置处理）
+        5.InitializingBean和init-method：执行我们自己定义的初始化方法
+        6.destroy：bean的销毁
+   
    ####springbean循环依赖
         循环依赖都是通过构造方法是不能解决循环依赖的
         
