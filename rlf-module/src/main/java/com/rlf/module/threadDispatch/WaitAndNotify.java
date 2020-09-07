@@ -32,11 +32,12 @@ public class WaitAndNotify {
         }).start();
 
         new Thread(()->{
+            count.countDown();
             synchronized (o){
                 try {
                     for (char c : b) {
                         System.out.print(c);
-                        count.countDown();
+
                         o.notify();
                         o.wait();
                     }

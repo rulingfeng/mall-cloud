@@ -1,5 +1,7 @@
 package com.rlf.module.threadDispatch;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.LockSupport;
@@ -16,9 +18,10 @@ public class ReentrantLockDemo {
         Condition condition1 = lock.newCondition();
         Condition condition2 = lock.newCondition();
         Condition condition3 = lock.newCondition();
-
+        CountDownLatch downLatch = new CountDownLatch(1);
         new Thread(()->{
             try{
+                //downLatch.await();
                 lock.lock();
                 for (char c : a) {
                     System.out.print(c);
@@ -35,6 +38,7 @@ public class ReentrantLockDemo {
         new Thread(()->{
             try{
                 lock.lock();
+               // downLatch.countDown();
                 for (char c : b) {
                     System.out.print(c);
                     condition1.signal();
