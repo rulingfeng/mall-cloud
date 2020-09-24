@@ -113,7 +113,6 @@ public class RedisConfiguration extends CachingConfigurerSupport {
         //首先解决key的序列化方式
         StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
         redisTemplate.setKeySerializer(stringRedisSerializer);
-
         //解决value的序列化方式
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
 
