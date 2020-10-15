@@ -1,6 +1,5 @@
-package com.rlf.module.design.map_if_else;
+package com.rlf.module.design.strategy.map_if_else;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;

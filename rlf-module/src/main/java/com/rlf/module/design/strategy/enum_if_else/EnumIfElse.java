@@ -1,8 +1,6 @@
-package com.rlf.module.design.enum_if_else;
+package com.rlf.module.design.strategy.enum_if_else;
 
-import lombok.Data;
 import lombok.Getter;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.Arrays;
 import java.util.Objects;

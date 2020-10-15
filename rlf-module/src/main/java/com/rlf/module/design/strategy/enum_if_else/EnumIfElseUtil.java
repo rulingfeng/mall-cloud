@@ -1,4 +1,4 @@
-package com.rlf.module.design.enum_if_else;
+package com.rlf.module.design.strategy.enum_if_else;
 
 /**
  * @author RU
