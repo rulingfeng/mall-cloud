@@ -30,7 +30,10 @@ public class User extends Model<User> implements Serializable,People {
     @TableField("age")
     protected String age;
 
-
+    public User(){}
+    public User(String userName){
+        this.userName = userName;
+    }
 
 
     @Override
