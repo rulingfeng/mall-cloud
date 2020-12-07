@@ -31,11 +31,11 @@ public class FunctionInterfaceImpl {
         return Lists.newArrayList(user);
     }
 
-    public static <T> List<T> convert(List<T> list ,Function<T,List<T>> function){
+    public static <A,E> List<E> convert(List<A> list ,Function<A,List<E>> function){
         return list.stream().filter(Objects::nonNull).flatMap( s ->{
-            List<T> apply = function.apply(s);
+            List<E> apply = function.apply(s);
             if(CollectionUtil.isEmpty(apply)){
-                return Lists.<T>newArrayList().stream();
+                return Lists.<E>newArrayList().stream();
             }
             return apply.stream();
         }).filter(Objects::nonNull).collect(Collectors.toList());
