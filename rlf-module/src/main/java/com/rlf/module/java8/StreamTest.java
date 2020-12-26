@@ -1,10 +1,12 @@
 package com.rlf.module.java8;
 
+import com.google.common.collect.Lists;
 import com.rlf.module.entity.User;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.*;
 
 /**
@@ -28,17 +30,33 @@ public class StreamTest {
 //        for (Iterator<User> iterator = list.iterator();iterator.hasNext();){
 //            iterator.next();
 //        }
-//        List<User> users = Collections.synchronizedList(new ArrayList<>());
-//
-//        Map<String,String> map = new HashMap<>();
-//        //map.put()
-//        list.forEach(System.out::println);
 //        Integer reduce = Stream.iterate(0, i -> i+1).limit(101).parallel().reduce(0, Integer::sum);
 //        Map<Integer, List<Integer>> collect = list.stream().collect(Collectors.groupingBy(Function.identity()));
 //        IntStream longStream = list.stream().flatMapToInt(i-> IntStream.of(Integer.valueOf(i)));
         //longStream.forEach(System.out::println);
 
-
-
+        //写filter(Predicate)过滤方法
+        listStreamFilter();
     }
+
+    private final static String MERCHATCODE = "MAOCHAO";
+    public static void listStreamFilter(){
+        List<User> list = Lists.newArrayList(new User("1"), new User("2")
+                , new User("3"), new User("4"), new User("5"));
+        List<User> res = list.stream().filter(filterByMerchatCode("TMGJZY")).collect(Collectors.toList());
+        res.forEach(System.out::println);
+    }
+
+    private static Predicate<User> filterByMerchatCode(String merchatCode) {
+        if(MERCHATCODE.equals(merchatCode)){
+            return user -> true;
+        }
+        return user -> {
+            if("4".equals(user.getUserName())){
+                return false;
+            }
+            return true;
+        };
+    }
+
 }
