@@ -6,11 +6,13 @@ import com.rlf.module.entity.User;
 import io.swagger.models.auth.In;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.implementation.bytecode.Throw;
 
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -332,6 +334,106 @@ public class CompletableFutureDemo {
         });
         return list;
     }
+
+    /**
+     * 来自https://javadoop.com/post/completable-future
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    public static void study() throws ExecutionException, InterruptedException {
+        //thenRun任务 A 执行完执行 B，并且 B 不需要 A 的结果。
+        CompletableFuture.supplyAsync(() -> "resultA").thenRun(() -> {});
+        //thenAccept，任务 A 执行完执行 B，B 需要 A 的结果，但是任务 B 不返回值。
+        CompletableFuture.supplyAsync(() -> "resultA").thenAccept(resultA -> {});
+
+        //thenApply，任务 A 执行完执行 B，B 需要 A 的结果，同时任务 B 有返回值。
+        CompletableFuture.supplyAsync(() -> "resultA").thenApply(resultA -> resultA + " resultB");
+
+        CompletableFuture<String> cfA = CompletableFuture.supplyAsync(() -> "resultA");
+        CompletableFuture<String> cfB = CompletableFuture.supplyAsync(() -> "resultB");
+
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        //指的是两个任务中的其中一个执行完成，就执行指定的操作 （参考以上 accept、apply、run）
+
+        //不是同步的，它由任务 A 或任务 B 所在的执行线程来执行，取决于哪个任务先结束。
+        cfA.acceptEither(cfB, result -> {});
+        //加了 Async 后缀的方法，代表将需要执行的任务放到 ForkJoinPool.commonPool() 中执行(非完全严谨)
+        cfA.acceptEitherAsync(cfB, result -> {});
+        //将任务放到指定线程池中执行；
+        cfA.acceptEitherAsync(cfB, result -> {}, executorService);
+
+        cfA.applyToEither(cfB, result -> {return result;});
+        cfA.applyToEitherAsync(cfB, result -> {return result;});
+        cfA.applyToEitherAsync(cfB, result -> {return result;}, executorService);
+
+        cfA.runAfterEither(cfB, () -> {});
+        cfA.runAfterEitherAsync(cfB, () -> {});
+        cfA.runAfterEitherAsync(cfB, () -> {}, executorService);
+
+
+
+
+
+
+
+
+        //thenAcceptBoth表示后续的处理不需要返回值
+        cfA.thenAcceptBoth(cfB, (resultA, resultB) -> {});
+        cfA.thenAcceptBoth(CompletableFuture.supplyAsync(() -> "resultB"),
+                (resultA, resultB) -> {});
+        //thenCombine表示后续的处理需要返回值
+        cfA.thenCombine(cfB, (resultA, resultB) -> "result A + B");
+        //runAfterBoth 不需要 resultA 和 resultB的结果
+        cfA.runAfterBoth(cfB, () -> {});
+
+
+        //thenCompose 和上面的thenCombine很相似，形成链：cfA -> cfB -> cfC。
+        //这里有个隐藏的点：cfA、cfB、cfC 它们完全没有数据依赖关系，我们只不过是聚合了它们的结果。
+        CompletableFuture<String> thenCompose = CompletableFuture.supplyAsync(() -> {
+            // 第一个实例的结果
+            return "hello";
+        }).thenCompose(resultA -> CompletableFuture.supplyAsync(() -> {
+            // 把上一个实例的结果传递到这里
+            return resultA + " world";
+        })).thenCompose(resultAB -> CompletableFuture.supplyAsync(() -> {
+            // 到这里大家应该很清楚了
+            return resultAB + ", I'm robot";
+        }));// hello world, I'm robot
+
+
+
+        //allOf 所以这里的 join() 将阻塞，直到所有的任务执行结束
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(cfA, cfB);
+        allOf.join();
+        //anyOf 返回最先完成的任务的结果
+        CompletableFuture<Object> anyOf = CompletableFuture.anyOf(cfA, cfB);
+        Object anyOfResult = anyOf.join();
+
+
+
+
+        //exceptionally捕捉到上一个方法的异常,返回新的结果,继续下面的执行,如果不用exceptionally则直接报错
+        CompletableFuture<String> exceptionally = CompletableFuture.supplyAsync(() -> {
+            throw new RuntimeException();
+        })
+                .exceptionally(ex -> "errorResultA")
+                .thenApply(resultA -> resultA + " resultB");
+
+        //handle捕捉到异常，exception参数为异常信息，res为上一个thenApply返回的结果
+        CompletableFuture<String> handle = CompletableFuture.supplyAsync(() -> "resultA")
+                .thenApply(resultA -> resultA + " resultB")
+                // 任务 C 抛出异常
+                .thenApply(resultB -> {throw new RuntimeException();})
+                // 处理任务 C 的返回值或异常
+                .handle((res,exception) -> {
+                    if (exception != null) {
+                        return "errorResultC";
+                    }
+                    return res;
+                })
+                .thenApply(resultC -> resultC + " resultD");
+    }
+
 
 
 
