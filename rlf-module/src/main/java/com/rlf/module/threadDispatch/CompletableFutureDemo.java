@@ -1,6 +1,7 @@
 package com.rlf.module.threadDispatch;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.rlf.module.entity.User;
 import io.swagger.models.auth.In;
@@ -55,12 +56,43 @@ public class CompletableFutureDemo {
         //listStreamSeparately();
         //如果执行中后异常,可以用handle方法进行捕捉,并处理
         //exceptionHandle();
-
+        //循环处理list,用异步线程(有返回值) 并阻塞.
+        //LoopHandleList();
+        //study学习的CompletableFuture
+        //study();
 
     }
 
+    public static void LoopHandleList(){
+        ArrayList<Integer> list = Lists.newArrayList(1, 2);
+        List<CompletableFuture<Integer>> collect = list.stream().map(i -> CompletableFuture.supplyAsync(() -> {
+            try {
+                return cal(i);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        })).collect(toList());
+        //全部完成之后进行下面的代码(阻塞) 和下面循环get()是一样的,只是get()方法可以返回返回值
+        CompletableFuture.allOf(collect.toArray(new CompletableFuture[collect.size()])).join();
+        List<Integer> collect1 = collect.stream().map(i -> {
+            try {
+                Integer integer = i.get();
+                return integer;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).collect(toList());
+        collect1.forEach(System.out::println);
+    }
 
-
+    public static Integer cal(Integer i) throws InterruptedException {
+        TimeUnit.MILLISECONDS.sleep(i*1000);
+        return ++i;
+    }
     public static void exceptionHandle()throws Exception{
 
         CompletableFuture<String> maturityFuture = CompletableFuture.supplyAsync(() -> {
