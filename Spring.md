@@ -74,6 +74,16 @@
         8.对aop进行处理，对目标类生成代理对象
         9.销毁bean容器
    
+   ###springboot启动流程
+       ConfigurableApplicationContext方法
+        1.计时器
+        2.事件监听器
+        3.读取配置文件,和准备上下文
+        4.打印日志
+        5.创建上下文
+        6.异常报告监听
+        7.springBean初始化 refresh
+
    ###spring bean的作用域有哪些?
         1.singleton : 唯一 bean 实例，Spring 中的 bean 默认都是单例的。
         2.prototype : 每次请求都会创建一个新的 bean 实例。
