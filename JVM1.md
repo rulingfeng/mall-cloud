@@ -158,7 +158,50 @@
             区别：正常完成出口和异常完成出口的区别：通过异常完成出口退出的不会给他的上层调用者产生任何的返回值
     5.一些附加信息
         栈帧中还允许携带与Java虚拟机实现相关的一些附加信息。例如：对程序调试提供支持的信息
-        
+
+###本地方法栈
+    线程私有
+    类似于虚拟机栈,java层面的native方法,用C++实现,通常与底层操作系统做交互
+    
+###堆
+![Image text](image/堆.png)
+![Image text](image/对象在堆中的晋升.png)
+####新生区
+    1.Eden区
+        新对象放不下Eden区后,会触发MinorGC,将Eden和From区存活对象放入to区
+       
+    2.S1 S2区
+        S1或S2对象满了后不会触发GC,必须是Eden区满了,才会GC,顺带清理from区,如清理后to区放不下,则一部分会进入老年代
+        新生区的对象默认经历15次GC，将进入老年代
+####养老区
+    养老区内存不足时，再次触发Major GC，进行养老区的内存清理,若还是放不下对象,则OOM异常
+####元空间
+
+
+###GC垃圾回收器
+    
+    
+    
+
+###JVM参数设置
+    -Xms600m 用于表示堆区的初始内存，等价于 -XX:InitialHeapSize
+    -Xmx600m 则用于表示堆区的最大内存，等价于 -XX:MaxHeapSize
+    -XX:+PrintGCDetails
+    -XX:NewRatio=2 表示新生代占1，老年代占2，新生代占整个堆的1/3
+    -XX:SurvivorRatio=8 Eden空间和另外两个survivor空间缺省所占的比例是8 : 1 : 1
+    -XX:MaxTenuringThreshold=15 从新生代进入养老区的GC年龄
+    
+###常用调优工具
+    JDK命令行
+    Eclipse：Memory Analyzer Tool
+    Jconsole
+    Visual VM（实时监控 推荐~）
+    Jprofiler（推荐~）
+    Java Flight Recorder（实时监控）
+    GCViewer
+    GCEasy
+
+    
         
 
 
