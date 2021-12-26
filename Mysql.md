@@ -63,7 +63,8 @@
         8.条件字段函数操作
              select * from tradelog where id + 1 = 10000 就走不上索引
              select * from tradelog where id = 9999就可以。
-        
+        9.唯一索引
+            默认B+树的索引实现
    ###mysql 索引
         聚簇索引: 主要体现在innoDB的存储引擎,就是主键,没有主键找非空的唯一索引,没有再找6个字节的rowid(对用户无感知),
                     并且会和数据一起存放在叶子节点里面
