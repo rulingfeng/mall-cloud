@@ -32,6 +32,7 @@
                 eq_ref: 类似ref，区别就在使用的索引是唯一索引，对于每个索引键值，表中只有一条记录匹配，简单来说，
                         就是多表连接中使用primary key或者 unique key作为关联条件
                 const:  当MySQL对查询某部分进行优化，并转换为一个常量时，使用这些类型访问。如将主键置于where列表中，MySQL就能将该查询转换为一个常量
+                        例:select * from table where id = 1
                 system: system是const类型的特例，当查询的表只有一行的情况下，使用system
                 NULL:   MySQL在优化过程中分解语句，执行时甚至不用访问表或索引，例如从一个索引列里选取最小值可以通过单独索引查找完成。
            
@@ -88,6 +89,9 @@
         
         脏读: 其他事务还没有提交的事务被读了出来
         不可重复读: 两次查询,中间有事务进行了修改操作,读出来的不一样
+            在 InnoDB 存储引擎中，SELECT 操作的不可重复读问题通过 MVCC 得到了解决，
+            而 UPDATE、DELETE 的不可重复读问题通过 Record Lock 解决，
+            INSERT 的不可重复读问题是通过 间隙锁Next-Key Lock（Record Lock + Gap Lock）解决的。
         幻读: 两次查询,中间有事务进行了增加操作,读出来的数据变多了
    
    ###Mysql主从
@@ -96,7 +100,7 @@
         
    ###主从复制的原理     
         1.MySql主库在事务提交时会把数据变更作为事件记录在二进制日志Binlog中；
-        2.主库推送二进制日志文件Binlog中的事件到从库的中继日志Relay Log中，之后从库根据中继日志重做数据变更操作，
+        2.主库推送二进制日志文件Binlog中的事件到从库的中继日志Relay Log中，之后从库根据日志中继重做数据变更操作，
             通过逻辑复制来达到主库和从库的数据一致性；
         3.MySql通过三个线程来完成主从库间的数据复制，其中Binlog Dump线程跑在主库上，I/O线程和SQL线程跑着从库上；
         4.当在从库上启动复制时，首先创建I/O线程连接主库，主库随后创建Binlog Dump线程读取数据库事件并发送给I/O线程，
@@ -178,7 +182,7 @@
   
   ###MySQL log
         undo log 
-            回滚和多版本控制(MVCC)
+            回滚和多版本控制(MVCC),保证了原子性
             insert一条数据了，那undo log会记录的一条对应的delete日志。
             update一条记录时，它会记录一条对应相反的update记录。
             
@@ -189,4 +193,19 @@
         redo log (innoDB引擎才有):
             mysql修改行,会先写在内存中,然后在写到磁盘中,如果写磁盘的过程中数据库挂了,就用到了redo log, redo log是记录修改的内容的
             并且用到了NIO,恢复速度快.
+            
+  ###数据结构
+        //https://www.cs.usfca.edu/~galles/visualization/Algorithms.html
+        二叉树
+        红黑树:又称二叉平衡树,由二叉树演变而来,再插入后,会左右平衡
+        
+![Image text](image/B树结构.png)
+
+        B树:由非叶子节点和叶子节点构成,本来节点只有一个数据,现在变成一个数组
+    
+![Image text](image/B+树结构.png)
+
+        B+树:叶子节点存储数据,非叶子节点不存储,叶子节点和非叶子节点的索引冗余,节点的双向指针
+        
+        
             
