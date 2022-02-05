@@ -655,7 +655,7 @@
         越来越多的对象晋升到老年代o1d region时，为了避免堆内存被耗尽，虚拟机会触发一个混合的垃圾收集器，即Mixed GC
         回收整个Young Region，还会回收一部分的old Region
     
-    G1回收可选的过程4 - Full GC
+    G1回收可选的过程 - Full GC
         EVacuation的时候没有足够的to-space来存放晋升的对象；
         并发处理过程完成之前空间耗尽。
         
