@@ -113,6 +113,15 @@
         4. PROPAGATION_SUPPORTS: 支持当前事务,如果当前没事务,已非事务方式运行
         5. PROPAGATION_MANDATORY: 使用当前事务,如果当前没有事务,抛异常
         6. PROPAGATION_NOT_SUPPORTED:  以非事务的方式执行, 如果当前存在事务,则把当前事务挂起
-        7. PROPAGATION_NEVER: 已非事务方式执行,如果当前存在事务,则抛出异常            
+        7. PROPAGATION_NEVER: 已非事务方式执行,如果当前存在事务,则抛出异常  
+
+   ###SpringMVC
+        springmvc的工作原理、执行流程
+         1.客户端（浏览器） 发送请求，直接请求到 DispatcherServlet.
+         2.Dispatcherservlet 根据请求信息调用 HandlerNapping，解析请求对应的 Handler(Controller)，开始由 HandterAdapter 适配器处理，
+         3.HandlerAdapter 会根据 Handter来调用真正的处理器开处理请求，井处理相应的业务逻辑。
+         4.处理器处理完业务后，会返回一个Mode lAndView 对象，Model 是返回的数据对象，View 是个逻辑上的 View.
+         5.ViewResoiver 会根据逻程 View 查找实际的 View.
+         6.Dispaterservlet 把返回的 Model 传给 View （视图渲染），返回给请求者（浏览器）
             
   
