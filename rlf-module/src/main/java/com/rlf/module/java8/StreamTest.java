@@ -37,6 +37,8 @@ public class StreamTest {
 
         //写filter(Predicate)过滤方法
         listStreamFilter();
+        //通过对象中的一个字段去重, stream流的distinct()方法是通过对象里面所以信息都相等才会去重
+        listStreamDistinctFilter();
     }
 
     private final static String MERCHATCODE = "MAOCHAO";
@@ -47,6 +49,27 @@ public class StreamTest {
         res.forEach(System.out::println);
     }
 
+    public static void listStreamDistinctFilter(){
+        User user = new User();
+        user.setId(1);
+        user.setAge("3");
+        User user1 = new User();
+        user1.setId(1);
+        user1.setAge("4");
+        User user2 = new User();
+        user2.setId(2);
+        user2.setAge("5");
+        List<User> userList = Lists.newArrayList(user,user1,user2);
+        List<User> collect = userList.stream().filter(distinctByKey(User::getId)).collect(Collectors.toList());
+        System.out.println(collect);
+    }
+
+
+    /**
+     * 过滤逻辑
+     * @param merchatCode
+     * @return
+     */
     private static Predicate<User> filterByMerchatCode(String merchatCode) {
         if(MERCHATCODE.equals(merchatCode)){
             return user -> true;
@@ -57,6 +80,17 @@ public class StreamTest {
             }
             return true;
         };
+    }
+
+    /**
+     * 过滤去重
+     * @param keyExtractor
+     * @return
+     * @param <T>
+     */
+    private static  <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
+        ConcurrentHashMap<Object, Boolean> map = new ConcurrentHashMap<>();
+        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 
 }
