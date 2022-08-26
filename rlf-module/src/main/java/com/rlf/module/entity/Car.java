@@ -15,6 +15,7 @@ public class Car  {
     int year;
     float rating;
 
+    public Car(){}
 
     public Car(int id, int manufacturerId, String model, int year) {
         this.id = id;

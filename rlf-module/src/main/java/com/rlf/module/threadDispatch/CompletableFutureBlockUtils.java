@@ -78,9 +78,9 @@ public class CompletableFutureBlockUtils {
     }
 
 
-    public static <T> List<T> blockThreadAndGet(List<CompletableFuture<T>> completableFutureList) throws ExecutionException, InterruptedException {
-        List<T> resList = Lists.newArrayList();
-        for (CompletableFuture<T> future : completableFutureList) {
+    public static <F> List<F> blockThreadAndGet(List<CompletableFuture<F>> completableFutureList) throws ExecutionException, InterruptedException {
+        List<F> resList = Lists.newArrayList();
+        for (CompletableFuture<F> future : completableFutureList) {
             resList.add(future.get());
         }
         return resList;
