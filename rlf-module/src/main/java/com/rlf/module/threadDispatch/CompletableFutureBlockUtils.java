@@ -6,7 +6,6 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.rlf.module.entity.Car;
 import com.rlf.module.entity.User;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 
 import java.util.List;
 import java.util.concurrent.*;
@@ -17,7 +16,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * @author: 茹凌丰
  * @date: 2022/8/26
- * @description:
+ * @description: CompletableFuture处理工具类
  */
 @Slf4j
 public class CompletableFutureBlockUtils {
@@ -66,29 +65,44 @@ public class CompletableFutureBlockUtils {
 
 
     /**
-     * 实现方式CompletableFuture.supplyAsync,并且同步返回结果
-     * @param com
-     * @param function
-     * @param <T>
-     * @param <F>
-     * @return
+     * 多线程处理列表,实现方式CompletableFuture.supplyAsync,并且同步返回结果
+     * @param sourceList 需要处理的原列表
+     * @param function 处理逻辑
+     * @param <T> 原数据类型
+     * @param <F> 返回的数据类型
+     * @return 所有执行后返回对象的列表
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public static <T,F> List<F> asyncHandleListAndSyncReturn(List<T> com,Function<T,CompletableFuture<F>> function) throws ExecutionException, InterruptedException {
-        if(CollectionUtil.isEmpty(com)){
+    public static <T,F> List<F> asyncHandleListAndSyncReturn(List<T> sourceList,Function<T,CompletableFuture<F>> function) throws ExecutionException, InterruptedException {
+        if(CollectionUtil.isEmpty(sourceList)){
             return null;
         }
-        List<CompletableFuture<F>> collect = com.stream().map(i -> hanleFunction(i, function)).collect(toList());
-        return  blockThreadAndGet(collect);
+        List<CompletableFuture<F>> collect = sourceList.stream().map(i -> hanleFunction(i, function)).collect(toList());
+        return blockThreadAndGet(collect);
 
     }
 
+    /**
+     * 执行function
+     * @param value 原数据对象
+     * @param function 处理逻辑
+     * @param <T> 原数据类型
+     * @param <R> 返回的数据类型
+     * @return 线程执行对象
+     */
     public static <T,R> CompletableFuture<R> hanleFunction(T value, Function<T,CompletableFuture<R>> function)  {
         return function.apply(value);
     }
 
-
+    /**
+     * 阻塞,并且拿到返回值
+     * @param completableFutureList 线程执行对象
+     * @param <F> 返回的数据类型
+     * @return 所有返回对象的列表
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     public static <F> List<F> blockThreadAndGet(List<CompletableFuture<F>> completableFutureList) throws ExecutionException, InterruptedException {
         List<F> resList = Lists.newArrayList();
         for (CompletableFuture<F> future : completableFutureList) {
